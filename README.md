@@ -24,6 +24,6 @@ u::::::::::::::u  n::::n    n::::n  o:::::ooooo:::::o
 ### Support ###
 
 Adds a real complete forum system very suitable for technical support.
-Coupled with 'Users', 'Markdown' and 'Paypal', you have a complete system to sell your premium plugin very easily with the same appearance and the same functionality as on wordpress.org.
+Coupled with 'Users', 'Markdown' and 'Paypal', you will have a complete system to sell your premium plugin very easily with the same appearance and the same functionality as on wordpress.org.
 
 [CMSUno](https://github.com/boiteasite/cmsuno)
