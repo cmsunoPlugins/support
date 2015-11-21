@@ -105,7 +105,7 @@ function supportTopic(f,g){
 			if(f.nextElementSibling)n.parentNode.parentNode.insertBefore(o,n.parentNode);
 			else m.parentNode.insertBefore(o,m.nextSibling);
 			edCanvas=document.getElementById("post_content");
-			document.getElementById("titleTopic").style.display='none';
+			if(document.getElementById("titleTopic")!==null)document.getElementById("titleTopic").style.display='none';
 		}
 	};
 	x.send(params);

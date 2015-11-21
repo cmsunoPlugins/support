@@ -76,7 +76,7 @@ input[type=button],.button{display:inline-block;text-decoration:none;font-size:1
 .post em{font-style:italic;}
 .post blockquote{padding:10px 10px 0 10px;border-color:#dadada;background:none;border-style:solid;border-width:1px 1px 1px 3px;}
 #wrapTopic{background-color:#f2f2f2;margin-top:-12px;position:relative;overflow:hidden;cursor:pointer;}
-.wrapTopicClose{position:absolute;top:5px;left:2px;width:16px;height:16px;background-image:url("img/close.png");}
+.wrapTopicClose{position:absolute;top:5px;left:2px;width:16px;height:16px;}
 #topic{padding:4px 0 0 4px;margin-left:20px;background-color:#fff;cursor:auto;}
 .postform,.postform p{font-size:12px;}
 .postform label{display:block;float:left;clear:left;}

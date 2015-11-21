@@ -10,5 +10,6 @@ $Ucontent = str_replace('[[support]]',$out,$Ucontent);
 $Uhead .= '<link rel="stylesheet" href="uno/plugins/support/supportInc.css" type="text/css" />'."\r\n";
 $Uhead .= '<script type="text/javascript" src="uno/plugins/support/quicktags-min.js"></script>'."\r\n";
 $Ufoot .= '<script type="text/javascript" src="uno/plugins/support/supportInc.js"></script>'."\r\n";
+$Ustyle .= '.wrapTopicClose{background-image:url("'.$Udep.'includes/img/close.png");}'."\r\n";
 $unoUbusy = 1; // insert Ubusy with $script
 ?>

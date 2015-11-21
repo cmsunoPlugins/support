@@ -21,9 +21,14 @@ u::::::::::::::u  n::::n    n::::n  o:::::ooooo:::::o
      \____/           \/    \/            \__/
 </pre>
 
-### Support ###
+## Support ##
 
 Adds a real complete forum system very suitable for technical support.
 Coupled with 'Users', 'Markdown' and 'Paypal', you will have a complete system to sell your premium plugin very easily with the same appearance and the same functionality as on wordpress.org.
 
 [CMSUno](https://github.com/boiteasite/cmsuno)
+
+### Versions ###
+
+* 1.0.1 - 21/11/2015 : Fix bugs
+* 1.0 - 05/10/2015 : First stable version
