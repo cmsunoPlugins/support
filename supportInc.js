@@ -98,7 +98,7 @@ function supportTopic(f,g){
 					if(a[v].getAttribute('id')=='resolveBloc'&&d['r']==Users['n'])a[v].style.display='block';
 					if(a[v].getAttribute('id')=='mailMeBloc'&&d['mail']&&d['mail'].search(','+Users['n']+',')!=-1)a[v].style.display='none';
 				}
-				c.appendChild(fed);edValue();
+				c.appendChild(fed);//edValue();
 			}
 			else c.innerHTML+='<h2 class="post-form">You must login to reply</h2>';
 			o.appendChild(c);

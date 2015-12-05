@@ -30,5 +30,6 @@ Coupled with 'Users', 'Markdown' and 'Paypal', you will have a complete system t
 
 ### Versions ###
 
+* 1.0.2 - 05/12/2015 : Fix bug when try to reply
 * 1.0.1 - 21/11/2015 : Fix bugs
 * 1.0 - 05/10/2015 : First stable version
