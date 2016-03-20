@@ -28,6 +28,7 @@ if (isset($_POST['a']))
 				if(isset($b['user'][strtolower($v['u'])])) $a['topic'][$k]['e'] = md5($b['user'][strtolower($v['u'])]['e']); // Gravatar works with MD5
 				else $a['topic'][$k]['e']='';
 				}
+			$a['topic'] = array_reverse($a['topic']);
 			$a['staf'] = (isset($c['staf'])?$c['staf']:'');
 			$out = json_encode($a);
 			echo $out;
