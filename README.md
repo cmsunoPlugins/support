@@ -30,6 +30,7 @@ Coupled with 'Users', 'Markdown' and 'Paypal', you will have a complete system t
 
 ### Versions ###
 
+* 1.1 - 14/10/2016 : Use PHP-Gettext in place of gettext
 * 1.0.3 - 20/03/2016 : Reorder topics like WordPress
 * 1.0.2 - 05/12/2015 : Fix bug when try to reply
 * 1.0.1 - 21/11/2015 : Fix bugs

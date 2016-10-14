@@ -16,11 +16,11 @@ if (isset($_POST['action']))
 		case 'plugin': ?>
 		<link rel="stylesheet" type="text/css" media="screen" href="uno/plugins/support/support.css" />
 		<div class="blocForm">
-			<h2><?php echo _("Support");?></h2>
-			<p><?php echo _("This plugin creates a complete forum system. It works with the plugin 'users'. It is more targeted to online support.");?></p>
-			<p><?php echo _("Just insert the code");?>&nbsp;<code>[[support]]</code>&nbsp;<?php echo _("in the template, in the page content or in another plugin.");?></p>
+			<h2><?php echo T_("Support");?></h2>
+			<p><?php echo T_("This plugin creates a complete forum system. It works with the plugin 'users'. It is more targeted to online support.");?></p>
+			<p><?php echo T_("Just insert the code");?>&nbsp;<code>[[support]]</code>&nbsp;<?php echo T_("in the template, in the page content or in another plugin.");?></p>
 			<div id="usersList">
-				<h3><?php echo _("Support List");?></h3>
+				<h3><?php echo T_("Support List");?></h3>
 				<div id="supportL"></div>
 			</div>
 			<div class="clear"></div>
@@ -62,17 +62,17 @@ if (isset($_POST['action']))
 					if($v['i']==$l) {unset($a['list'][$k]); $b = 1;}
 					else $c[] = $a['list'][$k];
 					}
-				if($b==0) echo '!'._('Error');
+				if($b==0) echo '!'.T_('Error');
 				else
 					{
 					$a['list'] = $c; // remove key in array
 					$out = json_encode($a);
-					if(file_put_contents('../../data/'.$Ubusy.'/support.json', $out) && unlink('../../data/'.$Ubusy.'/support/support'.$l.'.json')) echo _('Topic deleted');
-					else echo '!'._('Undeletable');
+					if(file_put_contents('../../data/'.$Ubusy.'/support.json', $out) && unlink('../../data/'.$Ubusy.'/support/support'.$l.'.json')) echo T_('Topic deleted');
+					else echo '!'.T_('Undeletable');
 					}
 				}
 			}
-		else echo '!'._('No data');
+		else echo '!'.T_('No data');
 		break;
 		// ********************************************************************************************
 		case 'delT':
@@ -95,7 +95,7 @@ if (isset($_POST['action']))
 						}
 					else $c[] = $b['topic'][$k];
 					}
-				if($d==0) echo '!'._('Error');
+				if($d==0) echo '!'.T_('Error');
 				else
 					{
 					$b['topic'] = $c; // remove key in array
@@ -111,13 +111,13 @@ if (isset($_POST['action']))
 							break;
 							}
 						}
-					if(file_put_contents('../../data/'.$Ubusy.'/support/support'.$l.'.json', $out) && file_put_contents('../../data/'.$Ubusy.'/support.json', json_encode($a))) echo _('Topic deleted');
-					else echo '!'._('Undeletable');
+					if(file_put_contents('../../data/'.$Ubusy.'/support/support'.$l.'.json', $out) && file_put_contents('../../data/'.$Ubusy.'/support.json', json_encode($a))) echo T_('Topic deleted');
+					else echo '!'.T_('Undeletable');
 					}
 				}
 			// traiter le cas du plus récent => changement user et date dans LIST !!!
 			}
-		else echo '!'._('No data');
+		else echo '!'.T_('No data');
 		break;
 		// ********************************************************************************************
 		}

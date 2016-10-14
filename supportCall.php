@@ -131,7 +131,7 @@ function mailAdmin($tit, $body, $Ubusy, $bottom, $top, $sdata)
 	$q = file_get_contents('../../data/_sdata-'.$sdata.'/ssite.json'); $b = json_decode($q,true);
 	$rn = "\r\n";
 	$boundary = "-----=".md5(rand());
-	$body = _("New Topic on Support").": <b>".$tit."</b><br />".$rn.$body.$rn;
+	$body = T_("New Topic on Support").": <b>".$tit."</b><br />".$rn.$body.$rn;
 	$msgT = strip_tags($body);
 	$msgH = $top . $body . $bottom;
 	$sujet = $a['tit'].' - '. $tit;
@@ -159,7 +159,7 @@ function mailUsers($dest, $tit, $body, $Ubusy, $bottom, $top, $sdata)
 	$q = file_get_contents('../../data/_sdata-'.$sdata.'/ssite.json'); $b = json_decode($q,true);
 	$q = file_get_contents('../../data/_sdata-'.$sdata.'/users.json'); $c = json_decode($q,true);
 	$rn = "\r\n";
-	$body = _("Response on Support").": <b>".$tit."</b><br />".$rn.$body.$rn;
+	$body = T_("Response on Support").": <b>".$tit."</b><br />".$rn.$body.$rn;
 	$msgT = strip_tags($body);
 	$msgH = $top . $body . $bottom;
 	$sujet = $a['tit'].' - '. $tit;
