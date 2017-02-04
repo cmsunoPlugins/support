@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CmsUno\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-25 10:57+0100\n"
-"PO-Revision-Date: 2015-08-25 10:57+0100\n"
+"POT-Creation-Date: 2017-02-04 17:37+0100\n"
+"PO-Revision-Date: 2017-02-04 17:37+0100\n"
 "Last-Translator: jacques Malgrange <contacter@boiteasite.fr>\n"
 "Language-Team: Jacques Malgrange <contacter@boiteasite.fr>\n"
 "Language: \n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Report-\tmsgstr-Bugs-To: \n"
 "Report-\t\tmsgstr-Bugs-To: \n"
-"X-Poedit-KeywordsList: _\n"
+"X-Poedit-KeywordsList: _;T_\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-Country: SPAIN\n"
 "X-Poedit-SourceCharset: iso-8859-1\n"
@@ -24,8 +24,8 @@ msgid "Support"
 msgstr "Soporte"
 
 #: ../../../support.php:20
-msgid "This plugin creates a complete forum system. It works with the plugin 'users'. It is more targeted to online support."
-msgstr "Este plugin crea un sistema de foros completa. Se trabaja con el plugin \"users\". Es más se apunta al soporte en línea."
+msgid "This plugin creates a complete forum system. It works with the USERS plugin. It is more targeted to online support."
+msgstr "Este plugin crea un sistema de foros completa. Se trabaja con el plugin USERS. Es más se apunta al soporte en línea."
 
 #: ../../../support.php:21
 msgid "Just insert the code"
@@ -35,35 +35,48 @@ msgstr "Sólo tiene que insertar el código"
 msgid "in the template, in the page content or in another plugin."
 msgstr "en el template, en el contenido de la página o en otro plugin."
 
-#: ../../../support.php:23
+#: ../../../support.php:22
+msgid "The language used in the emails will be the one selected in the USERS plugin."
+msgstr "El idioma utilizado en los mensajes de correo electrónico será el seleccionado en el plugin USERS."
+
+#: ../../../support.php:24
 msgid "Support List"
 msgstr "Lista de Soporte"
 
-#: ../../../support.php:65
-#: ../../../support.php:98
+#: ../../../support.php:66
+#: ../../../support.php:99
 msgid "Error"
 msgstr "Error"
 
-#: ../../../support.php:70
-#: ../../../support.php:114
+#: ../../../support.php:71
+#: ../../../support.php:115
 msgid "Topic deleted"
 msgstr "Tema eliminada"
 
-#: ../../../support.php:71
-#: ../../../support.php:115
+#: ../../../support.php:72
+#: ../../../support.php:116
 msgid "Undeletable"
 msgstr "eliminación es imposible"
 
-#: ../../../support.php:75
-#: ../../../support.php:120
+#: ../../../support.php:76
+#: ../../../support.php:121
 msgid "No data"
 msgstr "Sin datos"
 
-#: ../../../supportCall.php:133
+#: ../../../supportCall.php:89
+#: ../../../supportCall.php:90
+msgid "Response"
+msgstr "Respuesta"
+
+#: ../../../supportCall.php:125
+msgid "New Topic"
+msgstr "Nuevo tema"
+
+#: ../../../supportCall.php:141
 msgid "New Topic on Support"
 msgstr "Nuevo tema en el soporte"
 
-#: ../../../supportCall.php:161
+#: ../../../supportCall.php:169
 msgid "Response on Support"
 msgstr "Respuesta en el soporte"
 

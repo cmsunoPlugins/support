@@ -3,7 +3,7 @@ if(!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQU
 ?>
 <?php
 include('../../config.php');
-if (isset($_POST['a']))
+if(isset($_POST['a']))
 	{
 	switch(strip_tags($_POST['a']))
 		{
@@ -37,6 +37,13 @@ if (isset($_POST['a']))
 		break;
 		// ********************************************************************************************
 		case 'add':
+		if(file_exists('../../data/_sdata-'.$sdata.'/users.json')) // Default language from the USERS plugin
+			{
+			$q = file_get_contents('../../data/_sdata-'.$sdata.'/users.json');
+			$a = json_decode($q,true);
+			if(!empty($a['g'])) $lang = $a['g'];
+			}
+		include('lang/lang.php');
 		include '../../template/mailTemplate.php';
 		$t = time();
 		//
@@ -79,8 +86,8 @@ if (isset($_POST['a']))
 			if(file_put_contents('../../data/'.strip_tags($_POST['u']).'/support/support'.strip_tags($_POST['i']).'.json', $out) && file_put_contents('../../data/'.strip_tags($_POST['u']).'/support.json', $out1))
 				{
 				echo "OK";
-				mailAdmin('Response - '.$tit, filtreTag($_POST['c']), strip_tags($_POST['u']), $bottom, $top, $sdata);
-				if($mel) mailUsers($mel, 'Response - '.$tit, filtreTag($_POST['c']), strip_tags($_POST['u']), $bottom, $top, $sdata);
+				mailAdmin(T_("Response").' - '.$tit, filtreTag($_POST['c']), strip_tags($_POST['u']), $bottom, $top, $sdata);
+				if($mel) mailUsers($mel, T_("Response").' - '.$tit, filtreTag($_POST['c']), strip_tags($_POST['u']), $bottom, $top, $sdata);
 				exit;
 				}
 			}
@@ -115,7 +122,7 @@ if (isset($_POST['a']))
 			if(file_put_contents('../../data/'.strip_tags($_POST['u']).'/support/support'.$i.'.json', $out) && file_put_contents('../../data/'.strip_tags($_POST['u']).'/support.json', $out1))
 				{
 				echo "OK";
-				mailAdmin('New Topic : '.strip_tags($_POST['t']), filtreTag($_POST['c']), strip_tags($_POST['u']), $bottom, $top, $sdata);
+				mailAdmin(T_("New Topic").' : '.strip_tags($_POST['t']), filtreTag($_POST['c']), strip_tags($_POST['u']), $bottom, $top, $sdata);
 				exit;
 				}
 			}

@@ -17,8 +17,9 @@ if (isset($_POST['action']))
 		<link rel="stylesheet" type="text/css" media="screen" href="uno/plugins/support/support.css" />
 		<div class="blocForm">
 			<h2><?php echo T_("Support");?></h2>
-			<p><?php echo T_("This plugin creates a complete forum system. It works with the plugin 'users'. It is more targeted to online support.");?></p>
+			<p><?php echo T_("This plugin creates a complete forum system. It works with the USERS plugin. It is more targeted to online support.");?></p>
 			<p><?php echo T_("Just insert the code");?>&nbsp;<code>[[support]]</code>&nbsp;<?php echo T_("in the template, in the page content or in another plugin.");?></p>
+			<p><?php echo T_("The language used in the emails will be the one selected in the USERS plugin.");?></p>
 			<div id="usersList">
 				<h3><?php echo T_("Support List");?></h3>
 				<div id="supportL"></div>

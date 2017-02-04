@@ -130,6 +130,7 @@ function supportAddTopic(){
 		x.setRequestHeader('Connection','close');
 		x.onreadystatechange=function(){if(x.readyState==4&&x.status==200){window.scrollTo(0,0);location.reload();}}
 		x.send(params);
+		document.getElementById("postformsub").style.display="none";
 	}
 }
 function edValue(){
