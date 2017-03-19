@@ -41,6 +41,8 @@
 .sp table.widefat a{text-decoration:none;}
 .sp table.widefat tbody tr{cursor:pointer;}
 .sp table.widefat tbody tr:nth-child(2n+1){background-color:#f2f2f2;}
+.sp table.widefat tbody tr.staff{background-color:#fff8e5;}
+.sp table.widefat tbody tr.staff:nth-child(2n){background-color:#ffffe0}
 .sp table.widefat tbody.hover{cursor:pointer;}
 .sp table.widefat tbody tr:hover{background-color:#ddd;}
 .sp table.widefat tbody a:hover{color:#d54e21;}

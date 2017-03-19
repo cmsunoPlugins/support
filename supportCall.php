@@ -47,27 +47,27 @@ if(isset($_POST['a']))
 		include '../../template/mailTemplate.php';
 		$t = time();
 		//
+		$q = file_get_contents('../../data/'.strip_tags($_POST['u']).'/support.json');
+		$a = json_decode($q,true);
 		if(strip_tags($_POST['i'])!='' && file_exists('../../data/'.strip_tags($_POST['u']).'/support/support'.strip_tags($_POST['i']).'.json')) // add in a topic
 			{
 			// TOPIC
 			$q = file_get_contents('../../data/'.strip_tags($_POST['u']).'/support/support'.strip_tags($_POST['i']).'.json');
-			$a= json_decode($q,true);
+			$b = json_decode($q,true);
 			$n = 1; $i = 0;
-			foreach($a['topic'] as $r)
+			foreach($b['topic'] as $r)
 				{
 				++$n;
 				if(intval($r['i'])>$i) $i = intval($r['i']);
 				}
 			++$i;
-			$a['topic'][] = array('i'=>$i, 'c'=>stripslashes(filtreTag($_POST['c'])), 'u'=>strip_tags($_POST['m']), 'd'=>$t);
-			$mel = (isset($a['mail'])?$a['mail']:0);
-			if(!isset($a['mail'])) $a['mail'] = ',';
-			else if(strip_tags($_POST['e']) && strpos($a['mail'], ','.strip_tags($_POST['m']).',')===false) $a['mail'] .= strip_tags($_POST['m']).',';
-			usort($a['topic'],'sortDate');
-			$out = json_encode($a);
+			$b['topic'][] = array('i'=>$i, 'c'=>stripslashes(filtreTag($_POST['c'])), 'u'=>strip_tags($_POST['m']), 'd'=>$t);
+			$mel = (isset($b['mail'])?$b['mail']:0);
+			if(!isset($b['mail'])) $b['mail'] = ',';
+			else if(strip_tags($_POST['e']) && strpos($b['mail'], ','.strip_tags($_POST['m']).',')===false) $b['mail'] .= strip_tags($_POST['m']).',';
+			usort($b['topic'],'sortDate');
+			$out = json_encode($b);
 			// LIST
-			$q = file_get_contents('../../data/'.strip_tags($_POST['u']).'/support.json');
-			$a = json_decode($q,true);
 			foreach($a['list'] as $k=>$v)
 				{
 				if($v['i']==strip_tags($_POST['i']))
@@ -77,6 +77,7 @@ if(isset($_POST['a']))
 					$a['list'][$k]['d'] = $t;
 					if(strip_tags($_POST['r'])) $a['list'][$k]['r'] = 'r';
 					$tit = $a['list'][$k]['t'];
+					if(!isset($a['list'][$k]['s'])) $a['list'][$k]['s'] = 0; // 1:staff
 					break;
 					}
 				}
@@ -93,8 +94,6 @@ if(isset($_POST['a']))
 			}
 		else // add a new topic at the list
 			{
-			$q = file_get_contents('../../data/'.strip_tags($_POST['u']).'/support.json');
-			$a = json_decode($q,true);
 			if(!isset($a['staf']))
 				{
 				$a['staf'] = '';
@@ -111,7 +110,8 @@ if(isset($_POST['a']))
 				if(intval($r['i'])>$i) $i = intval($r['i']);
 				}
 			++$i; 
-			$a['list'][] = array('i'=>$i, 'n'=>1, 't'=>strip_tags($_POST['t']), 'u'=>strip_tags($_POST['m']), 'd'=>$t, 'r'=>strip_tags($_POST['m']));
+			$a['list'][] = array('i'=>$i, 'n'=>1, 't'=>strip_tags($_POST['t']), 'u'=>strip_tags($_POST['m']), 'd'=>$t, 'r'=>strip_tags($_POST['m']), 's'=>($i==$a['staf']?1:0));
+			if($a['staf']==$i) 
 			usort($a['list'],'sortDate');
 			$out1 = json_encode($a);
 			//
@@ -136,28 +136,47 @@ function mailAdmin($tit, $body, $Ubusy, $bottom, $top, $sdata)
 	$bottom = str_replace('[[unsubscribe]]','&nbsp;',$bottom);
 	$q = file_get_contents('../../data/'.$Ubusy.'/site.json'); $a = json_decode($q,true);
 	$q = file_get_contents('../../data/_sdata-'.$sdata.'/ssite.json'); $b = json_decode($q,true);
-	$rn = "\r\n";
-	$boundary = "-----=".md5(rand());
-	$body = T_("New Topic on Support").": <b>".$tit."</b><br />".$rn.$body.$rn;
+	$body = T_("New Topic on Support").": <b>".$tit."</b><br />\r\n".$body."\r\n";
 	$msgT = strip_tags($body);
 	$msgH = $top . $body . $bottom;
-	$sujet = $a['tit'].' - '. $tit;
+	$subject = $a['tit'].' - '. $tit;
 	$fm = preg_replace("/[^a-zA-Z ]+/", "", $a['tit']);
-	$header  = "From: ".$fm."<".$b['mel'].">".$rn."Reply-To:".$fm."<".$b['mel'].">";
-	$header.= "MIME-Version: 1.0".$rn;
-	$header.= "Content-Type: multipart/alternative;".$rn." boundary=\"$boundary\"".$rn;
-	$msg= $rn."--".$boundary.$rn;
-	$msg.= "Content-Type: text/plain; charset=\"utf-8\"".$rn;
-	$msg.= "Content-Transfer-Encoding: 8bit".$rn;
-	$msg.= $rn.$msgT.$rn;
-	$msg.= $rn."--".$boundary.$rn;
-	$msg.= "Content-Type: text/html; charset=\"utf-8\"".$rn;
-	$msg.= "Content-Transfer-Encoding: 8bit".$rn;
-	$msg.= $rn.$msgH.$rn;
-	$msg.= $rn."--".$boundary."--".$rn;
-	$msg.= $rn."--".$boundary."--".$rn;
-	if(mail($b['mel'], stripslashes($tit), stripslashes($msg), $header)) return true;
-	else return false;
+	if(file_exists(dirname(__FILE__).'/../newsletter/PHPMailer/PHPMailerAutoload.php'))
+		{
+		// PHPMailer
+		require_once(dirname(__FILE__).'/../newsletter/PHPMailer/PHPMailerAutoload.php');
+		$phm = new PHPMailer();
+		$phm->CharSet = "UTF-8";
+		$phm->setFrom($b['mel'], $fm);
+		$phm->addReplyTo($b['mel'], $fm);
+		$phm->AddAddress($b['mel']);
+		$phm->isHTML(true);
+		$phm->Subject = stripslashes($subject);
+		$phm->Body = stripslashes($msgH);		
+		$phm->AltBody = stripslashes($msgT);
+		if($phm->Send()) return true;
+		else return false;
+		}
+	else
+		{
+		$rn = "\r\n";
+		$boundary = "-----=".md5(rand());
+		$header = "From: ".$fm."<".$b['mel'].">".$rn."Reply-To:".$fm."<".$b['mel'].">";
+		$header .= "MIME-Version: 1.0".$rn;
+		$header .= "Content-Type: multipart/alternative;".$rn." boundary=\"$boundary\"".$rn;
+		$msg = $rn."--".$boundary.$rn;
+		$msg .= "Content-Type: text/plain; charset=\"utf-8\"".$rn;
+		$msg .= "Content-Transfer-Encoding: 8bit".$rn;
+		$msg .= $rn.$msgT.$rn;
+		$msg .= $rn."--".$boundary.$rn;
+		$msg .= "Content-Type: text/html; charset=\"utf-8\"".$rn;
+		$msg .= "Content-Transfer-Encoding: 8bit".$rn;
+		$msg .= $rn.$msgH.$rn;
+		$msg .= $rn."--".$boundary."--".$rn;
+		$msg .= $rn."--".$boundary."--".$rn;
+		if(mail($b['mel'], stripslashes($subject), stripslashes($msg), $header)) return true;
+		else return false;
+		}
 	}
 function mailUsers($dest, $tit, $body, $Ubusy, $bottom, $top, $sdata)
 	{
@@ -165,31 +184,56 @@ function mailUsers($dest, $tit, $body, $Ubusy, $bottom, $top, $sdata)
 	$q = file_get_contents('../../data/'.$Ubusy.'/site.json'); $a = json_decode($q,true);
 	$q = file_get_contents('../../data/_sdata-'.$sdata.'/ssite.json'); $b = json_decode($q,true);
 	$q = file_get_contents('../../data/_sdata-'.$sdata.'/users.json'); $c = json_decode($q,true);
-	$rn = "\r\n";
 	$body = T_("Response on Support").": <b>".$tit."</b><br />".$rn.$body.$rn;
 	$msgT = strip_tags($body);
 	$msgH = $top . $body . $bottom;
-	$sujet = $a['tit'].' - '. $tit;
+	$subject = $a['tit'].' - '. $tit;
 	$fm = preg_replace("/[^a-zA-Z ]+/", "", $a['tit']);
-	$header  = "From: ".$fm."<".$b['mel'].">".$rn."Reply-To:".$fm."<".$b['mel'].">";
-	$header.= "MIME-Version: 1.0".$rn;
 	$dest = explode(',', $dest);
-	foreach($dest as $r)
+	if(file_exists(dirname(__FILE__).'/../newsletter/PHPMailer/PHPMailerAutoload.php'))
 		{
-		if($r && isset($c['user'][$r])) $m = $c['user'][$r]['e'];
-		$boundary = "-----=".md5(rand());
-		$header.= "Content-Type: multipart/alternative;".$rn." boundary=\"$boundary\"".$rn;
-		$msg= $rn."--".$boundary.$rn;
-		$msg.= "Content-Type: text/plain; charset=\"utf-8\"".$rn;
-		$msg.= "Content-Transfer-Encoding: 8bit".$rn;
-		$msg.= $rn.$msgT.$rn;
-		$msg.= $rn."--".$boundary.$rn;
-		$msg.= "Content-Type: text/html; charset=\"utf-8\"".$rn;
-		$msg.= "Content-Transfer-Encoding: 8bit".$rn;
-		$msg.= $rn.$msgH.$rn;
-		$msg.= $rn."--".$boundary."--".$rn;
-		$msg.= $rn."--".$boundary."--".$rn;
-		if($m!=$b['mel']) @mail($m, stripslashes($tit), stripslashes($msg), $header);
+		// PHPMailer
+		require_once(dirname(__FILE__).'/../newsletter/PHPMailer/PHPMailerAutoload.php');
+		$phm = new PHPMailer();
+		$phm->CharSet = "UTF-8";
+		$phm->setFrom($b['mel'], $fm);
+		$phm->addReplyTo($b['mel'], $fm);
+		$phm->isHTML(true);
+		$phm->Subject = stripslashes($subject);
+		$phm->Body = stripslashes($msgH);		
+		$phm->AltBody = stripslashes($msgT);
+		foreach($dest as $r)
+			{
+			$phm->clearAllRecipients();
+			$m = '';
+			if($r && isset($c['user'][$r])) $m = $c['user'][$r]['e'];
+			$phm->AddAddress($m);
+			if($m && $m!=$b['mel']) $phm->Send();
+			}
+		}
+	else
+		{
+		$rn = "\r\n";
+		$header  = "From: ".$fm."<".$b['mel'].">".$rn."Reply-To:".$fm."<".$b['mel'].">";
+		$header.= "MIME-Version: 1.0".$rn;
+		foreach($dest as $r)
+			{
+			$m = '';
+			if($r && isset($c['user'][$r])) $m = $c['user'][$r]['e'];
+			$boundary = "-----=".md5(rand());
+			$header.= "Content-Type: multipart/alternative;".$rn." boundary=\"$boundary\"".$rn;
+			$msg= $rn."--".$boundary.$rn;
+			$msg.= "Content-Type: text/plain; charset=\"utf-8\"".$rn;
+			$msg.= "Content-Transfer-Encoding: 8bit".$rn;
+			$msg.= $rn.$msgT.$rn;
+			$msg.= $rn."--".$boundary.$rn;
+			$msg.= "Content-Type: text/html; charset=\"utf-8\"".$rn;
+			$msg.= "Content-Transfer-Encoding: 8bit".$rn;
+			$msg.= $rn.$msgH.$rn;
+			$msg.= $rn."--".$boundary."--".$rn;
+			$msg.= $rn."--".$boundary."--".$rn;
+			if($m && $m!=$b['mel']) @mail($m, stripslashes($subject), stripslashes($msg), $header);
+			}
 		}
 	}
 function filtreTag($f)

@@ -53,7 +53,8 @@ var fed=document.createElement('form'),edCanvas;
 			if(x.responseText){
 				d=eval('('+x.responseText+')');
 				o='<table class="widefat"><thead><tr><th>Topic</th><th>Posts</th><th>Last Poster</th><th>Freshness</th></tr></thead><tbody id="spT">';
-				for(v=0;v<d['list'].length;v++)o+='<tr onClick="supportTopic(this,'+d['list'][v]['i']+')" id="support'+d['list'][v]['i']+'"><td>'+((d['list'][v]['r']=='')?'[resolved] ':'')+d['list'][v]['t'].replace(/\\'/g,"'")+'</td><td>'+d['list'][v]['n']+'</td><td>'+d['list'][v]['u']+'</td><td>'+supportDate(d['list'][v]['d'])+'</td></tr>';
+				for(v=0;v<d['list'].length;v++)if(d['list'][v]['s']==1)o+='<tr class="staff" onClick="supportTopic(this,'+d['list'][v]['i']+',1)" id="support'+d['list'][v]['i']+'"><td>'+((d['list'][v]['r']=='')?'[resolved] ':'')+d['list'][v]['t'].replace(/\\'/g,"'")+'</td><td>'+d['list'][v]['n']+'</td><td>'+d['list'][v]['u']+'</td><td>'+supportDate(d['list'][v]['d'])+'</td></tr>';
+				for(v=0;v<d['list'].length;v++)if(d['list'][v]['s']!=1)o+='<tr onClick="supportTopic(this,'+d['list'][v]['i']+',0)" id="support'+d['list'][v]['i']+'"><td>'+((d['list'][v]['r']=='')?'[resolved] ':'')+d['list'][v]['t'].replace(/\\'/g,"'")+'</td><td>'+d['list'][v]['n']+'</td><td>'+d['list'][v]['u']+'</td><td>'+supportDate(d['list'][v]['d'])+'</td></tr>';
 				o+='</tbody></table>';
 				p.innerHTML=o;
 			}
@@ -69,7 +70,7 @@ var fed=document.createElement('form'),edCanvas;
 	};
 	x.send(params);
 })();
-function supportTopic(f,g){
+function supportTopic(f,g,h){
 	var x=new XMLHttpRequest(),m=f.parentNode.parentNode,n,o,d,c,e='<ol id="thread">',z,v,a,params='a=topic&i='+g+'&u='+Ubusy;
 	x.open('POST','uno/plugins/support/supportCall.php',true);
 	x.setRequestHeader('Content-type','application/x-www-form-urlencoded;charset=utf-8');
@@ -89,7 +90,7 @@ function supportTopic(f,g){
 			o=document.createElement('div');o.id='wrapTopic';o.onclick=function(){supportClose(this)};
 			c=document.createElement('div');c.className='wrapTopicClose';o.appendChild(c);
 			c=document.createElement('div');c.id='topic';c.onclick=function(event){if(event.stopPropagation)event.stopPropagation();else event.returnValue=false;};c.innerHTML=e;
-			if(Users){
+			if(Users&&h==0){
 				c.innerHTML+='<h2 class="post-form">Reply</h2>';
 				a=fed.getElementsByTagName('strong');for(v=0;v<a.length;v++)if(a[v].getAttribute('id')=='supportUsersName')a[v].innerHTML=Users['n'];
 				a=fed.getElementsByTagName('input');for(v=0;v<a.length;v++)if(a[v].getAttribute('id')=='idList')a[v].value=g;
@@ -100,7 +101,7 @@ function supportTopic(f,g){
 				}
 				c.appendChild(fed);//edValue();
 			}
-			else c.innerHTML+='<h2 class="post-form">You must login to reply</h2>';
+			else if(h==0)c.innerHTML+='<h2 class="post-form">You must login to reply</h2>';
 			o.appendChild(c);
 			if(f.nextElementSibling)n.parentNode.parentNode.insertBefore(o,n.parentNode);
 			else m.parentNode.insertBefore(o,m.nextSibling);

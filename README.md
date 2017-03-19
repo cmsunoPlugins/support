@@ -30,6 +30,7 @@ Coupled with 'Users', 'Markdown' and 'Paypal', you will have a complete system t
 
 ### Versions ###
 
+* 1.2.2 - 19/03/2017 : Use PHPMailer if Newsletter plugin exists - Replace MCrypt by OpenSSL - Add Staff topic (background pink)
 * 1.2.1 - 15/03/2017 : Fix issue when unknow lang
 * 1.2 - 04/02/2017 : Fix issue with PHP-Gettext - The email language is the one specified in the USERS plugin
 * 1.1 - 14/10/2016 : Use PHP-Gettext in place of gettext

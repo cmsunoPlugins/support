@@ -8,9 +8,9 @@ include('../../config.php');
 include('lang/lang.php');
 $q = file_get_contents('../../data/busy.json'); $a = json_decode($q,true); $Ubusy = $a['nom'];
 // ********************* actions *************************************************************************
-if (isset($_POST['action']))
+if(isset($_POST['action']))
 	{
-	switch ($_POST['action'])
+	switch($_POST['action'])
 		{
 		// ********************************************************************************************
 		case 'plugin': ?>
@@ -35,7 +35,6 @@ if (isset($_POST['action']))
 			echo $q;
 			}
 		else echo false;
-		exit;
 		break;
 		// ********************************************************************************************
 		case 'loadT':
@@ -46,7 +45,6 @@ if (isset($_POST['action']))
 			echo $q;
 			}
 		else echo false;
-		exit;
 		break;
 		// ********************************************************************************************
 		case 'delL':
@@ -123,6 +121,5 @@ if (isset($_POST['action']))
 		// ********************************************************************************************
 		}
 	clearstatcache();
-	exit;
 	}
 ?>
