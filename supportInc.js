@@ -122,7 +122,8 @@ function supportClose(f){
 function supportAddTopic(){
 	var c=document.getElementById("post_content").value,i=document.getElementById('idList').value,t=document.getElementById('topic').value,e=document.getElementById('mailMe').checked,r=document.getElementById('resolve').checked;
 	if(c.length>2&&(i!=''||t.length>2)){
-		c=c.replace(/(\r\n|\n|\r)/gm,"<br>");
+		c=c.replace(/(\r\n|\n|\r)/gm,"zz <br> zz");
+		c=c.replace(/(><)/gm,"> yy <");
 		var x=new XMLHttpRequest(),params='a=add&c='+c+'&i='+i+'&m='+Users['n']+'&t='+t+'&u='+Ubusy+'&e='+e+'&r='+r;
 		x.open('POST','uno/plugins/support/supportCall.php',true);
 		x.setRequestHeader('Content-type','application/x-www-form-urlencoded;charset=utf-8');

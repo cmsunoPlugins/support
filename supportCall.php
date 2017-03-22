@@ -49,6 +49,9 @@ if(isset($_POST['a']))
 		//
 		$q = file_get_contents('../../data/'.strip_tags($_POST['u']).'/support.json');
 		$a = json_decode($q,true);
+		$cont = str_replace('> yy <', '><', stripslashes($_POST['c'])); // Avoid Ajax 403
+		$cont = str_replace('zz <br> zz', '<br>', $cont);
+		$cont = filtreTag($cont);
 		if(strip_tags($_POST['i'])!='' && file_exists('../../data/'.strip_tags($_POST['u']).'/support/support'.strip_tags($_POST['i']).'.json')) // add in a topic
 			{
 			// TOPIC
@@ -61,7 +64,7 @@ if(isset($_POST['a']))
 				if(intval($r['i'])>$i) $i = intval($r['i']);
 				}
 			++$i;
-			$b['topic'][] = array('i'=>$i, 'c'=>stripslashes(filtreTag($_POST['c'])), 'u'=>strip_tags($_POST['m']), 'd'=>$t);
+			$b['topic'][] = array('i'=>$i, 'c'=>$cont, 'u'=>strip_tags($_POST['m']), 'd'=>$t);
 			$mel = (isset($b['mail'])?$b['mail']:0);
 			if(!isset($b['mail'])) $b['mail'] = ',';
 			else if(strip_tags($_POST['e']) && strpos($b['mail'], ','.strip_tags($_POST['m']).',')===false) $b['mail'] .= strip_tags($_POST['m']).',';
@@ -87,8 +90,8 @@ if(isset($_POST['a']))
 			if(file_put_contents('../../data/'.strip_tags($_POST['u']).'/support/support'.strip_tags($_POST['i']).'.json', $out) && file_put_contents('../../data/'.strip_tags($_POST['u']).'/support.json', $out1))
 				{
 				echo "OK";
-				mailAdmin(T_("Response").' - '.$tit, filtreTag($_POST['c']), strip_tags($_POST['u']), $bottom, $top, $sdata);
-				if($mel) mailUsers($mel, T_("Response").' - '.$tit, filtreTag($_POST['c']), strip_tags($_POST['u']), $bottom, $top, $sdata);
+				mailAdmin(T_("Response").' - '.$tit, $cont, strip_tags($_POST['u']), $bottom, $top, $sdata);
+				if($mel) mailUsers($mel, T_("Response").' - '.$tit, $cont, strip_tags($_POST['u']), $bottom, $top, $sdata);
 				exit;
 				}
 			}
@@ -111,18 +114,17 @@ if(isset($_POST['a']))
 				}
 			++$i; 
 			$a['list'][] = array('i'=>$i, 'n'=>1, 't'=>strip_tags($_POST['t']), 'u'=>strip_tags($_POST['m']), 'd'=>$t, 'r'=>strip_tags($_POST['m']), 's'=>($i==$a['staf']?1:0));
-			if($a['staf']==$i) 
 			usort($a['list'],'sortDate');
 			$out1 = json_encode($a);
 			//
 			$a = array();
-			$a['topic'][] = array('i'=>0, 'c'=>stripslashes(filtreTag($_POST['c'])), 'u'=>strip_tags($_POST['m']), 'd'=>$t);
+			$a['topic'][] = array('i'=>0, 'c'=>$cont, 'u'=>strip_tags($_POST['m']), 'd'=>$t);
 			$a['mail'] = ',' . ($_POST['e']?$_POST['m'].',':'');
 			$out = json_encode($a);
 			if(file_put_contents('../../data/'.strip_tags($_POST['u']).'/support/support'.$i.'.json', $out) && file_put_contents('../../data/'.strip_tags($_POST['u']).'/support.json', $out1))
 				{
 				echo "OK";
-				mailAdmin(T_("New Topic").' : '.strip_tags($_POST['t']), filtreTag($_POST['c']), strip_tags($_POST['u']), $bottom, $top, $sdata);
+				mailAdmin(T_("New Topic").' : '.strip_tags($_POST['t']), $cont, strip_tags($_POST['u']), $bottom, $top, $sdata);
 				exit;
 				}
 			}
