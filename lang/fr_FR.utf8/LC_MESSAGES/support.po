@@ -2,11 +2,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CmsUno\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-04 17:36+0100\n"
-"PO-Revision-Date: 2017-02-04 17:36+0100\n"
+"POT-Creation-Date: 2017-04-25 15:58+0200\n"
+"PO-Revision-Date: 2017-04-25 16:05+0200\n"
 "Last-Translator: jacques Malgrange <contacter@boiteasite.fr>\n"
 "Language-Team: Jacques Malgrange <contacter@boiteasite.fr>\n"
-"Language: \n"
+"Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,9 +14,8 @@ msgstr ""
 "Report-\t\tmsgstr-Bugs-To: \n"
 "X-Poedit-KeywordsList: _;T_\n"
 "X-Poedit-Basepath: .\n"
-"X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: iso-8859-1\n"
-"X-Poedit-Language: French\n"
+"X-Generator: Poedit 1.8.12\n"
 "X-Poedit-SearchPath-0: ../../..\n"
 
 #: ../../../support.php:19
@@ -24,8 +23,12 @@ msgid "Support"
 msgstr "Support"
 
 #: ../../../support.php:20
-msgid "This plugin creates a complete forum system. It works with the USERS plugin. It is more targeted to online support."
-msgstr "Ce plugin crée un système complet de forum. Il fonctionne avec le plugin USERS. Il est orienté vers le support en ligne."
+msgid ""
+"This plugin creates a complete forum system. It works with the USERS plugin. "
+"It is more targeted to online support."
+msgstr ""
+"Ce plugin crée un système complet de forum. Il fonctionne avec le plugin "
+"USERS. Il est orienté vers le support en ligne."
 
 #: ../../../support.php:21
 msgid "Just insert the code"
@@ -36,47 +39,142 @@ msgid "in the template, in the page content or in another plugin."
 msgstr "dans le template, dans le contenu de la page ou dans un autre plugin."
 
 #: ../../../support.php:22
-msgid "The language used in the emails will be the one selected in the USERS plugin."
-msgstr "La langue utilisée dans les emails sera celle choisie dans le plugin USERS."
+msgid "The language used will be the one selected in the USERS plugin."
+msgstr "La langue utilisée sera celle choisie dans le plugin USERS."
 
 #: ../../../support.php:24
 msgid "Support List"
 msgstr "Liste du support"
 
-#: ../../../support.php:66
-#: ../../../support.php:99
+#: ../../../support.php:64 ../../../support.php:97 ../../../support.php:146
+#: ../../../support.php:174 ../../../support.php:263
 msgid "Error"
 msgstr "Erreur"
 
-#: ../../../support.php:71
-#: ../../../support.php:115
+#: ../../../support.php:69 ../../../support.php:113
 msgid "Topic deleted"
 msgstr "Sujet supprimé"
 
-#: ../../../support.php:72
-#: ../../../support.php:116
+#: ../../../support.php:70 ../../../support.php:114
 msgid "Undeletable"
 msgstr "Suppression impossible"
 
-#: ../../../support.php:76
-#: ../../../support.php:121
+#: ../../../support.php:74 ../../../support.php:119
 msgid "No data"
 msgstr "Pas de données"
 
-#: ../../../supportCall.php:89
-#: ../../../supportCall.php:90
+#: ../../../support.php:141 ../../../support.php:169 ../../../support.php:257
+msgid "Saved"
+msgstr "Sauvegardé"
+
+#: ../../../supportCall.php:112 ../../../supportCall.php:113
 msgid "Response"
 msgstr "Réponse"
 
-#: ../../../supportCall.php:125
+#: ../../../supportCall.php:146
 msgid "New Topic"
 msgstr "Nouveau sujet"
 
-#: ../../../supportCall.php:141
+#: ../../../supportCall.php:160
 msgid "New Topic on Support"
 msgstr "Nouveau sujet dans la support"
 
-#: ../../../supportCall.php:169
+#: ../../../supportCall.php:208
 msgid "Response on Support"
 msgstr "Réponse dans le support"
 
+#: ../../../supportMake.php:21
+msgid "Member"
+msgstr "Membre"
+
+#: ../../../supportMake.php:22
+msgid "Topic title"
+msgstr "Sujet"
+
+#: ../../../supportMake.php:23
+msgid "Bold"
+msgstr "Gras"
+
+#: ../../../supportMake.php:24
+msgid "Italic"
+msgstr "Italique"
+
+#: ../../../supportMake.php:25
+msgid "Underline"
+msgstr "Souligné"
+
+#: ../../../supportMake.php:26
+msgid "Hyperlink"
+msgstr "Lien"
+
+#: ../../../supportMake.php:27
+msgid "Image"
+msgstr "Image"
+
+#: ../../../supportMake.php:28
+msgid "List"
+msgstr "Liste"
+
+#: ../../../supportMake.php:29
+msgid "Color"
+msgstr "Couleur"
+
+#: ../../../supportMake.php:30
+msgid "Quote"
+msgstr "Commentaire"
+
+#: ../../../supportMake.php:31
+msgid "Code"
+msgstr "Code"
+
+#: ../../../supportMake.php:32
+msgid "switch to source"
+msgstr "Voir la source"
+
+#: ../../../supportMake.php:33
+msgid "Post"
+msgstr "Post"
+
+#: ../../../supportMake.php:34
+msgid "Posts"
+msgstr "Items"
+
+#: ../../../supportMake.php:35
+msgid "Notify me of follow-up posts via email"
+msgstr "M'informer des réponses par email"
+
+#: ../../../supportMake.php:36
+msgid "Mark this topic as resolved"
+msgstr "Ce sujet est résolu"
+
+#: ../../../supportMake.php:37
+msgid "Topic"
+msgstr "Sujet"
+
+#: ../../../supportMake.php:38
+msgid "Last Poster"
+msgstr "Dernier rédacteur"
+
+#: ../../../supportMake.php:39
+msgid "Freshness"
+msgstr "Plus récent"
+
+#: ../../../supportMake.php:40
+msgid "resolved"
+msgstr "Résolu"
+
+#: ../../../supportMake.php:41 ../../../supportMake.php:43
+msgid "Add Topic"
+msgstr "Nouveau sujet"
+
+#: ../../../supportMake.php:42
+msgid "Staff"
+msgstr "Modérateur"
+
+#: ../../../supportMake.php:44
+msgid "Reply"
+msgstr "Réponse"
+
+#: ../../../supportMake.php:45
+msgid "You must login to reply"
+msgstr "Vous devez être connecté pour répondre"

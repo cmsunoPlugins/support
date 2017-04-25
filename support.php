@@ -19,7 +19,7 @@ if(isset($_POST['action']))
 			<h2><?php echo T_("Support");?></h2>
 			<p><?php echo T_("This plugin creates a complete forum system. It works with the USERS plugin. It is more targeted to online support.");?></p>
 			<p><?php echo T_("Just insert the code");?>&nbsp;<code>[[support]]</code>&nbsp;<?php echo T_("in the template, in the page content or in another plugin.");?></p>
-			<p><?php echo T_("The language used in the emails will be the one selected in the USERS plugin.");?></p>
+			<p><?php echo T_("The language used will be the one selected in the USERS plugin.");?></p>
 			<div id="usersList">
 				<h3><?php echo T_("Support List");?></h3>
 				<div id="supportL"></div>
@@ -38,7 +38,7 @@ if(isset($_POST['action']))
 		break;
 		// ********************************************************************************************
 		case 'loadT':
-		$l = $_POST['topic'];
+		$l = intval($_POST['topic']);
 		if(file_exists('../../data/'.$Ubusy.'/support/support'.$l.'.json'))
 			{
 			$q = file_get_contents('../../data/'.$Ubusy.'/support/support'.$l.'.json');
@@ -48,7 +48,7 @@ if(isset($_POST['action']))
 		break;
 		// ********************************************************************************************
 		case 'delL':
-		$l = $_POST['del'];
+		$l = intval($_POST['del']);
 		if(file_exists('../../data/'.$Ubusy.'/support.json') && $l)
 			{
 			$q = file_get_contents('../../data/'.$Ubusy.'/support.json'); $a = json_decode($q,true);
@@ -75,8 +75,8 @@ if(isset($_POST['action']))
 		break;
 		// ********************************************************************************************
 		case 'delT':
-		$l = $_POST['l'];
-		$i= $_POST['i'];
+		$l = intval($_POST['l']);
+		$i = intval($_POST['i']);
 		if(file_exists('../../data/'.$Ubusy.'/support.json')  && $l && file_exists('../../data/'.$Ubusy.'/support/support'.$l.'.json'))
 			{
 			$q = file_get_contents('../../data/'.$Ubusy.'/support/support'.$l.'.json'); $b = json_decode($q,true);
@@ -119,7 +119,158 @@ if(isset($_POST['action']))
 		else echo '!'.T_('No data');
 		break;
 		// ********************************************************************************************
+		case 'saveL':
+		$i = intval($_POST['i']);
+		$t = strip_tags($_POST['t']);
+		if(file_exists('../../data/'.$Ubusy.'/support.json'))
+			{
+			$q = file_get_contents('../../data/'.$Ubusy.'/support.json'); $a = json_decode($q,true);
+			if(isset($a['list']))
+				{
+				$c = 0;
+				foreach($a['list'] as $k=>$v)
+					{
+					if($v['i']==$i)
+						{
+						$a['list'][$k]['t'] = $t;
+						$c = 1;
+						}
+					}
+				if($c && file_put_contents('../../data/'.$Ubusy.'/support.json', json_encode($a)))
+					{
+					echo T_('Saved');
+					exit;
+					}
+				}
+			}
+		echo '!'.T_('Error');
+		break;
+		// ********************************************************************************************
+		case 'saveT':
+		$l = intval($_POST['l']);
+		$i = intval($_POST['i']);
+		$p = utf8_encode(urldecode(base64_decode($_POST['c'])));
+		if(file_exists('../../data/'.$Ubusy.'/support.json')  && $l && file_exists('../../data/'.$Ubusy.'/support/support'.$l.'.json'))
+			{
+			$q = file_get_contents('../../data/'.$Ubusy.'/support/support'.$l.'.json'); $b = json_decode($q,true);
+			if(isset($b['topic']))
+				{
+				$c = 0;
+				foreach($b['topic'] as $k=>$v)
+					{
+					if($v['i']==$i)
+						{
+						$b['topic'][$k]['c'] = $p;
+						$c = 1;
+						}
+					}
+				if($c && file_put_contents('../../data/'.$Ubusy.'/support/support'.$l.'.json', json_encode($b)))
+					{
+					echo T_('Saved');
+					exit;
+					}
+				}
+			}
+		echo '!'.T_('Error');
+		break;
+		// ********************************************************************************************
+		case 'saveM':
+		$i = intval($_POST['i']);
+		$l = intval($_POST['l']); // current
+		$m = intval($_POST['m']); // move to
+		if(file_exists('../../data/'.$Ubusy.'/support.json')  && $l && file_exists('../../data/'.$Ubusy.'/support/support'.$l.'.json') && $m && ($m==-1 || file_exists('../../data/'.$Ubusy.'/support/support'.$m.'.json')))
+			{
+			$q = file_get_contents('../../data/'.$Ubusy.'/support.json'); $a = json_decode($q,true);
+			$q = file_get_contents('../../data/'.$Ubusy.'/support/support'.$l.'.json'); $b = json_decode($q,true);
+			if($m!=-1) // move to new topic
+				{
+				$q = file_get_contents('../../data/'.$Ubusy.'/support/support'.$m.'.json'); $c = json_decode($q,true);
+				}
+			if(isset($a['list']))
+				{
+				$d = 0; $t = 0; $t0 = 0; $id = 0; $b1 = array(); $m1 = ',';
+				foreach($b['topic'] as $k=>$v) // support/supportZZ.json : $b & $c
+					{
+					if($v['i']==$i)
+						{
+						unset($b['topic'][$k]);
+						if($m!=-1)
+							{
+							$c['topic'][] = $v;
+							usort($c['topic'],'sortDate');
+							}
+						$t = $v['d'];
+						$d = 1;
+						$w = $v;
+						}
+					else
+						{
+						if($t0<$v['d']) $t0 = $v['d']; // last post
+						$b['topic'][$k]['i'] = $id; // renum i
+						$b1[] = $b['topic'][$k];
+						$m1 .= $v['u'].','; // member already in the post ?
+						++$id;
+						}
+					}
+				$b['topic'] = $b1;
+				if(strpos($c['mail'], ','.$w['u'].',')===false && strpos($b['mail'], ','.$w['u'].',')!==false) $c['mail'] .= $w['u'].','; // Add mail
+				if(strpos($b['mail'], ','.$w['u'].',')!==false && strpos($m1, ','.$w['u'].',')===false) $b['mail'] = str_replace($w['u'].',', '', $b['mail']); // Remove mail
+				//
+				if($d)
+					{
+					$id = 0;
+					foreach($c['topic'] as $k=>$v)
+						{
+						$c['topic'][$k]['i'] = $id; // renum i
+						++$id;
+						}
+					$e = array(); $f = 0;
+					foreach($a['list'] as $k=>$v) // support.json : $a
+						{
+						if($v['i']>$f) $f = $v['i']; // max (new)
+						if($v['i']==$l)
+							{
+							if($v['n']>1)
+								{
+								$a['list'][$k]['d'] = $t0;
+								$a['list'][$k]['n']--;
+								}
+							else
+								{
+								unset($a['list'][$k]);
+								$d = 2;
+								}
+							}
+						else if($m!=-1 && $v['i']==$m)
+							{
+							if($v['d']<$t) $a['list'][$k]['d'] = $t;
+							$a['list'][$k]['n']++;
+							}
+						if(isset($a['list'][$k])) $e[] = $a['list'][$k];
+						}
+					if($m==-1)
+						{
+						$m = $f + 1;
+						$e[] = array('i'=>$m, 'n'=>1, 't'=>'_new_', 'u'=>$w['u'], 'd'=>$t, 'r'=>'r', 's'=>0);
+						$c = array();
+						$c['topic'][] = array('i'=>0, 'c'=>$w['c'], 'u'=>$w['u'], 'd'=>$t);
+						$c['mail'] = ','.$w['u'].',';
+						}
+					$a['list'] = $e; // remove key in array
+					if(file_put_contents('../../data/'.$Ubusy.'/support.json', json_encode($a)) && ($d==2 || file_put_contents('../../data/'.$Ubusy.'/support/support'.$l.'.json', json_encode($b))) && file_put_contents('../../data/'.$Ubusy.'/support/support'.$m.'.json', json_encode($c)))
+						{
+						if($d==2) unlink('../../data/'.$Ubusy.'/support/support'.$l.'.json');
+						echo T_('Saved');
+						exit;
+						}
+					}
+				}
+			}
+		echo '!'.T_('Error');
+		break;
+		// ********************************************************************************************
 		}
 	clearstatcache();
 	}
+function sortDate($i,$j){return strcmp($j['d'], $i['d']);}
 ?>

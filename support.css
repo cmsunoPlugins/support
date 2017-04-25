@@ -1,8 +1,12 @@
-#supportL>table{margin:10px;}
+#supportL>table{margin:10px;vertical-align:middle;}
 #supportL>table>tr>td:nth-child(1){padding-right:20px;color:#0074cc;cursor:pointer;}
+#supportL>table>tr>td.resolved{color:green;}
 #supportL>table>tr>td:nth-child(3){padding-right:30px;padding-left:30px;}
 #supportL>table>tr>td:nth-child(4){padding-right:30px;padding-left:30px;}
-#supportL>table>tr>td:nth-child(5){font-weight:700;font-size:120%;color:red;cursor:pointer;}
+#supportL>table>tr>td.supportTd{cursor:auto;}
 #supportL>table .supportTd table{margin:5px 0 5px 20px;}
 #supportL>table .supportTd td{border:1px solid #aaa;padding:3px 5px;}
-#supportL>table .supportTd td:nth-child(4){font-weight:700;font-size:120%;color:red;cursor:pointer;}
+#supportL>table .supportTd textarea{width:90%;padding:6px;}
+#supportL>table .supportTd .bouton{margin:10px;}
+#supportL>table>tr>td:nth-child(5) div, #supportL>table .supportTd div{cursor:pointer;width:16px;height:16px;}
+#supportL table table td{max-width:600px;overflow:hidden;}

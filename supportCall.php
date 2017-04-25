@@ -9,22 +9,33 @@ if(isset($_POST['a']))
 		{
 		// ********************************************************************************************
 		case 'list':
-		if(file_exists('../../data/'.strip_tags($_POST['u']).'/support.json'))
+		$u = strip_tags($_POST['u']);
+		if(file_exists('../../data/'.$u.'/support.json'))
 			{
-			echo file_get_contents('../../data/'.strip_tags($_POST['u']).'/support.json');
+			echo file_get_contents('../../data/'.$u.'/support.json');
 			}
 		else echo false;
 		break;
 		// ********************************************************************************************
 		case 'topic':
-		if(file_exists('../../data/'.strip_tags($_POST['u']).'/support/support'.strip_tags($_POST['i']).'.json') && file_exists('../../data/_sdata-'.$sdata.'/users.json'))
+		$u = strip_tags($_POST['u']);
+		$i = intval($_POST['i']);
+		if(file_exists('../../data/'.$u.'/support/support'.$i.'.json') && file_exists('../../data/_sdata-'.$sdata.'/users.json'))
 			{
-			$q = file_get_contents('../../data/'.strip_tags($_POST['u']).'/support/support'.strip_tags($_POST['i']).'.json'); $a = json_decode($q,true);
+			$q = file_get_contents('../../data/'.$u.'/support/support'.$i.'.json'); $a = json_decode($q,true);
 			$q = file_get_contents('../../data/_sdata-'.$sdata.'/users.json'); $b = json_decode($q,true); // add email for gravatar
-			$q = file_get_contents('../../data/'.strip_tags($_POST['u']).'/support.json'); $c = json_decode($q,true); // check resolved
-			foreach($c['list'] as $r) { if($r['i']==strip_tags($_POST['i'])) $a['r'] = $r['r']; break;}
+			$q = file_get_contents('../../data/'.$u.'/support.json'); $c = json_decode($q,true); // check resolved
+			foreach($c['list'] as $r)
+				{
+				if($r['i']==$i)
+					{
+					$a['r'] = $r['r']; // resolve
+					break;
+					}
+				}
 			foreach($a['topic'] as $k=>$v)
 				{
+				if($v['i']==0) $a['u'] = $v['u']; // first writter
 				if(isset($b['user'][strtolower($v['u'])])) $a['topic'][$k]['e'] = md5($b['user'][strtolower($v['u'])]['e']); // Gravatar works with MD5
 				else $a['topic'][$k]['e']='';
 				}
@@ -37,6 +48,13 @@ if(isset($_POST['a']))
 		break;
 		// ********************************************************************************************
 		case 'add':
+		$u = strip_tags($_POST['u']); // ubusy
+		$m = strip_tags($_POST['m']); // member
+		$to = strip_tags($_POST['t']); // topic (title)
+		$e = intval($_POST['e']); // mailme
+		$re = intval($_POST['r']); // resolve
+		$i = intval($_POST['i']);
+		$cont = utf8_encode(urldecode(base64_decode($_POST['c'])));
 		if(file_exists('../../data/_sdata-'.$sdata.'/users.json')) // Default language from the USERS plugin
 			{
 			$q = file_get_contents('../../data/_sdata-'.$sdata.'/users.json');
@@ -47,38 +65,39 @@ if(isset($_POST['a']))
 		include '../../template/mailTemplate.php';
 		$t = time();
 		//
-		$q = file_get_contents('../../data/'.strip_tags($_POST['u']).'/support.json');
+		$q = file_get_contents('../../data/'.$u.'/support.json');
 		$a = json_decode($q,true);
-		$cont = str_replace('> yy <', '><', stripslashes($_POST['c'])); // Avoid Ajax 403
-		$cont = str_replace('zz <br> zz', '<br>', $cont);
-		$cont = filtreTag($cont);
-		if(strip_tags($_POST['i'])!='' && file_exists('../../data/'.strip_tags($_POST['u']).'/support/support'.strip_tags($_POST['i']).'.json')) // add in a topic
+		$cont = str_replace('<', '&lt;', $cont);
+		$cont = str_replace('>', '&gt;', $cont);
+		$cont = str_replace('[br]', '<br>', $cont);
+		$cont = bb2html($cont);
+		if($i!='' && file_exists('../../data/'.$u.'/support/support'.$i.'.json')) // add in a topic
 			{
 			// TOPIC
-			$q = file_get_contents('../../data/'.strip_tags($_POST['u']).'/support/support'.strip_tags($_POST['i']).'.json');
+			$q = file_get_contents('../../data/'.$u.'/support/support'.$i.'.json');
 			$b = json_decode($q,true);
-			$n = 1; $i = 0;
+			$n = 1; $j = 0;
 			foreach($b['topic'] as $r)
 				{
 				++$n;
-				if(intval($r['i'])>$i) $i = intval($r['i']);
+				if(intval($r['i'])>$j) $j = intval($r['i']);
 				}
-			++$i;
-			$b['topic'][] = array('i'=>$i, 'c'=>$cont, 'u'=>strip_tags($_POST['m']), 'd'=>$t);
+			++$j;
+			$b['topic'][] = array('i'=>$j, 'c'=>$cont, 'u'=>$m, 'd'=>$t);
 			$mel = (isset($b['mail'])?$b['mail']:0);
 			if(!isset($b['mail'])) $b['mail'] = ',';
-			else if(strip_tags($_POST['e']) && strpos($b['mail'], ','.strip_tags($_POST['m']).',')===false) $b['mail'] .= strip_tags($_POST['m']).',';
+			if($e && strpos($b['mail'], ','.$m.',')===false) $b['mail'] .= $m.',';
 			usort($b['topic'],'sortDate');
 			$out = json_encode($b);
 			// LIST
 			foreach($a['list'] as $k=>$v)
 				{
-				if($v['i']==strip_tags($_POST['i']))
+				if($v['i']==$i)
 					{
 					$a['list'][$k]['n'] = $n;
-					$a['list'][$k]['u'] = strip_tags($_POST['m']);
+					$a['list'][$k]['u'] = $m;
 					$a['list'][$k]['d'] = $t;
-					if(strip_tags($_POST['r'])) $a['list'][$k]['r'] = 'r';
+					$a['list'][$k]['r'] = $re;
 					$tit = $a['list'][$k]['t'];
 					if(!isset($a['list'][$k]['s'])) $a['list'][$k]['s'] = 0; // 1:staff
 					break;
@@ -87,11 +106,11 @@ if(isset($_POST['a']))
 			usort($a['list'],'sortDate');
 			$out1 = json_encode($a);
 			//
-			if(file_put_contents('../../data/'.strip_tags($_POST['u']).'/support/support'.strip_tags($_POST['i']).'.json', $out) && file_put_contents('../../data/'.strip_tags($_POST['u']).'/support.json', $out1))
+			if(file_put_contents('../../data/'.$u.'/support/support'.$i.'.json', $out) && file_put_contents('../../data/'.$u.'/support.json', $out1))
 				{
 				echo "OK";
-				mailAdmin(T_("Response").' - '.$tit, $cont, strip_tags($_POST['u']), $bottom, $top, $sdata);
-				if($mel) mailUsers($mel, T_("Response").' - '.$tit, $cont, strip_tags($_POST['u']), $bottom, $top, $sdata);
+				mailAdmin(T_("Response").' - '.$tit, $cont, $u, $bottom, $top, $sdata);
+				if($mel) mailUsers($mel, T_("Response").' - '.$tit, $cont, $u, $bottom, $top, $sdata);
 				exit;
 				}
 			}
@@ -107,24 +126,24 @@ if(isset($_POST['a']))
 					if($r['e']==$c['mel']) $a['staf'] = $r['n'];
 					}
 				}
-			$i = 0;
+			$j = 0;
 			if(isset($a['list']) && is_array($a['list'])) foreach($a['list'] as $r)
 				{
-				if(intval($r['i'])>$i) $i = intval($r['i']);
+				if(intval($r['i'])>$j) $j = intval($r['i']);
 				}
-			++$i; 
-			$a['list'][] = array('i'=>$i, 'n'=>1, 't'=>strip_tags($_POST['t']), 'u'=>strip_tags($_POST['m']), 'd'=>$t, 'r'=>strip_tags($_POST['m']), 's'=>($i==$a['staf']?1:0));
+			++$j;
+			$a['list'][] = array('i'=>$j, 'n'=>1, 't'=>$to, 'u'=>$m, 'd'=>$t, 'r'=>$re, 's'=>($j==$a['staf']?1:0));
 			usort($a['list'],'sortDate');
 			$out1 = json_encode($a);
 			//
 			$a = array();
-			$a['topic'][] = array('i'=>0, 'c'=>$cont, 'u'=>strip_tags($_POST['m']), 'd'=>$t);
-			$a['mail'] = ',' . ($_POST['e']?$_POST['m'].',':'');
+			$a['topic'][] = array('i'=>0, 'c'=>$cont, 'u'=>$m, 'd'=>$t);
+			$a['mail'] = ',' . ($e?$m.',':'');
 			$out = json_encode($a);
-			if(file_put_contents('../../data/'.strip_tags($_POST['u']).'/support/support'.$i.'.json', $out) && file_put_contents('../../data/'.strip_tags($_POST['u']).'/support.json', $out1))
+			if(file_put_contents('../../data/'.$u.'/support/support'.$j.'.json', $out) && file_put_contents('../../data/'.$u.'/support.json', $out1))
 				{
 				echo "OK";
-				mailAdmin(T_("New Topic").' : '.strip_tags($_POST['t']), $cont, strip_tags($_POST['u']), $bottom, $top, $sdata);
+				mailAdmin(T_("New Topic").' : '.$to, $cont, $u, $bottom, $top, $sdata);
 				exit;
 				}
 			}
@@ -138,7 +157,7 @@ function mailAdmin($tit, $body, $Ubusy, $bottom, $top, $sdata)
 	$bottom = str_replace('[[unsubscribe]]','&nbsp;',$bottom);
 	$q = file_get_contents('../../data/'.$Ubusy.'/site.json'); $a = json_decode($q,true);
 	$q = file_get_contents('../../data/_sdata-'.$sdata.'/ssite.json'); $b = json_decode($q,true);
-	$body = T_("New Topic on Support").": <b>".$tit."</b><br />\r\n".$body."\r\n";
+	$body = '<div style="width:560px">'.T_("New Topic on Support").": <b>".$tit."</b><br />\r\n".$body.'</div>'."\r\n";
 	$msgT = strip_tags($body);
 	$msgH = $top . $body . $bottom;
 	$subject = $a['tit'].' - '. $tit;
@@ -186,7 +205,7 @@ function mailUsers($dest, $tit, $body, $Ubusy, $bottom, $top, $sdata)
 	$q = file_get_contents('../../data/'.$Ubusy.'/site.json'); $a = json_decode($q,true);
 	$q = file_get_contents('../../data/_sdata-'.$sdata.'/ssite.json'); $b = json_decode($q,true);
 	$q = file_get_contents('../../data/_sdata-'.$sdata.'/users.json'); $c = json_decode($q,true);
-	$body = T_("Response on Support").": <b>".$tit."</b><br />".$rn.$body.$rn;
+	$body = '<div style="width:560px">'.T_("Response on Support").": <b>".$tit."</b><br />".$rn.$body.'</div>'.$rn;
 	$msgT = strip_tags($body);
 	$msgH = $top . $body . $bottom;
 	$subject = $a['tit'].' - '. $tit;
@@ -238,26 +257,38 @@ function mailUsers($dest, $tit, $body, $Ubusy, $bottom, $top, $sdata)
 			}
 		}
 	}
-function filtreTag($f)
+function bb2html($f)
 	{
-	// <strong></strong><em></em><a href></a><blockquote></blockquote><ol></ol><ul></ul><li></li>
-	$b = 0;
-	$out = "";
-	for($v=0;$v<strlen($f);++$v)
+	$b = array(
+        '#\[b\](.*)\[/b\]#Usi',
+        '#\[i\](.*)\[/i\]#Usi',
+        '#\[u\](.*)\[/u\]#Usi',
+        '#\[img\](.*)\[/img\]#Usi',
+        '#\[url\](.*)\[/url\]#Usi',
+        '#\[url=(.*)\](.*)\[/url\]#Usi',
+        '#\[ul\](.*)\[/ul\]#Usi',
+        '#\[li\](.*)\[/li\]#Usi',
+        '#\[color=(.*)\](.*)\[/color\]#Usi',
+        '#\[quote=\](.*)\[/quote\]#Usi',
+        '#\[code\](.*)\[/code\]#Usi'
+		);
+	$h = array(
+        '<strong>$1</strong>',
+        '<em>$1</em>',
+        '<span style="text-decoration:underline;">$1</span>',
+        '<img src="$1" alt="Image" />',
+        '<a href="$1">$1</a>',
+        '<a href="$1">$2</a>',
+        '<ul>$1</ul>',
+        '<li>$1</li>',
+        '<span style="color:#$1">$2</span>',
+        '<blockquote>$1</blockquote>',
+        '<pre>$1</pre>'
+		);
+    for($i=0; $i<count($b); ++$i)
 		{
-		if(substr($f,$v,1)=="`" && $b==0)
-			{
-			$b = 1;
-			$out .= '<pre><code>';
-			}
-		else if(substr($f,$v,1)=="`" && $b==1)
-			{
-			$b = 0;
-			$out .= '</code></pre>';
-			}
-		else if(substr($f,$v,1)=='<' && substr($f,$v,8)!='<strong>' && substr($f,$v,9)!='</strong>' && substr($f,$v,4)!='<em>' && substr($f,$v,5)!='</em>' && substr($f,$v,7)!='<a href' && substr($f,$v,4)!='</a>' && substr($f,$v,12)!='<blockquote>' && substr($f,$v,13)!='</blockquote>' && substr($f,$v,4)!='<ol>' && substr($f,$v,5)!='</ol>' && substr($f,$v,4)!='<ul>' && substr($f,$v,5)!='</ul>' && substr($f,$v,4)!='<li>' && substr($f,$v,5)!='</li>' && substr($f,$v,3)!='<br') $out .= '&lt;';
-		else $out .= substr($f,$v,1);
+		$f = preg_replace($b[$i], $h[$i], $f);
 		}
-	return $out;
+	return $f;
 	}
 ?>
