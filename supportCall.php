@@ -67,9 +67,12 @@ if(isset($_POST['a']))
 		//
 		$q = file_get_contents('../../data/'.$u.'/support.json');
 		$a = json_decode($q,true);
-		$cont = str_replace('<', '&lt;', $cont);
+		$cont = trim(str_replace('<', '&lt;', $cont));
 		$cont = str_replace('>', '&gt;', $cont);
-		$cont = str_replace('[br]', '<br>', $cont);
+		$cont = trim(str_replace('[br]', '<br>', $cont),'<br>');
+		while(strpos($cont,'  ')!==false) $cont = str_replace('  ', ' ', $cont);
+		$cont = str_replace('<br> <br>', '<br><br>', $cont);
+		while(strpos($cont,'<br><br><br>')!==false) $cont = str_replace('<br><br><br>', '<br><br>', $cont);
 		$cont = bb2html($cont);
 		if($i!='' && file_exists('../../data/'.$u.'/support/support'.$i.'.json')) // add in a topic
 			{
