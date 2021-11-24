@@ -122,27 +122,25 @@ if(isset($_POST['action']))
 		case 'saveL':
 		$i = intval($_POST['i']);
 		$t = strip_tags($_POST['t']);
-		if(file_exists('../../data/'.$Ubusy.'/support.json'))
-			{
+		if(file_exists('../../data/'.$Ubusy.'/support.json')) {
+			$b = array();
 			$q = file_get_contents('../../data/'.$Ubusy.'/support.json'); $a = json_decode($q,true);
-			if(isset($a['list']))
-				{
+			if(isset($a['list'])) {
 				$c = 0;
-				foreach($a['list'] as $k=>$v)
-					{
-					if($v['i']==$i)
-						{
+				foreach($a['list'] as $k=>$v) {
+					if($v['i']==$i) {
 						$a['list'][$k]['t'] = $t;
 						$c = 1;
-						}
 					}
-				if($c && file_put_contents('../../data/'.$Ubusy.'/support.json', json_encode($a)))
-					{
+					$b[] = $v;
+				}
+				$a['list'] = $b; // clear key
+				if($c && file_put_contents('../../data/'.$Ubusy.'/support.json', json_encode($a))) {
 					echo T_('Saved');
 					exit;
-					}
 				}
 			}
+		}
 		echo '!'.T_('Error');
 		break;
 		// ********************************************************************************************
@@ -164,7 +162,7 @@ if(isset($_POST['action']))
 						$c = 1;
 						}
 					}
-				if($c && file_put_contents('../../data/'.$Ubusy.'/support/support'.$l.'.json', json_encode($b)))
+				if($c && file_put_contents('../../data/'.$Ubusy.'/support/support'.$l.'.json', json_encode($b, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)))
 					{
 					echo T_('Saved');
 					exit;

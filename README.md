@@ -30,6 +30,7 @@ Coupled with 'Users', 'Markdown' and 'Paypal', you will have a complete system t
 
 ### Versions ###
 
+* 1.3.3 - 24/11/2021 : Fix array key issue when remove Topic
 * 1.3.2 - 16/04/2020 : Trim and Fix multiple <br> in topic
 * 1.3.1 - 22/01/2018 : Add URL in the bottom of the mail
 * 1.3 - 25/04/2017 : New wysiwyg editor - Fix ajax issues - Admin part more powerfull - Multilang
