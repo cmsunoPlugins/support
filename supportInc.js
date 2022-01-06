@@ -40,7 +40,7 @@ var edCanvas,bbe=document.createElement('form');bb=true;
 	r=document.createElement('td');
 	s=document.createElement('p');s.className='submit';
 	t=document.createElement('input');t.id='idList';t.type='hidden';s.appendChild(t);
-	t=document.createElement('input');t.className='button';t.type='button';t.value=supTr.pot;t.onclick=function(){doCheck();supportAddTopic();};s.appendChild(t);
+	t=document.createElement('input');t.className='button';t.type='button';t.value=supTr.pot;t.onclick=function(){doCheck();supportAddTopic(this);};s.appendChild(t);
 	r.appendChild(s);
 	s=document.createElement('label');s.id='mailMeBloc';t=document.createElement('input');t.id='mailMe';t.type='checkbox';t.checked=true;s.appendChild(t);s.innerHTML+='&nbsp;'+supTr.ntm;r.appendChild(s);
 	s=document.createElement('label');s.id='resolveBloc';t=document.createElement('input');t.id='resolve';t.type='checkbox';t.checked=false;s.appendChild(t);s.innerHTML+='&nbsp;'+supTr.mar;r.appendChild(s);
@@ -136,7 +136,7 @@ function supportClose(f){
 		document.getElementById('titleTopic').style.display='block';
 	}
 }
-function supportAddTopic(){
+function supportAddTopic(f){
 	var c=document.getElementById("textareaEd").value,i=document.getElementById('idList').value,t=document.getElementById('topic').value,e=(document.getElementById('mailMe').checked?1:0),r=(document.getElementById('resolve').checked?1:0);
 	if(c.length>2&&(i!=''||t.length>2)){
 		c=c.replace(/(\r\n|\n|\r)/gm,"[br]");
@@ -151,7 +151,10 @@ function supportAddTopic(){
 			}
 		}
 		x.send(params);
-		document.getElementById("postformsub").style.display="none";
+		if(f){
+			f.style.display="none";
+			t=document.createElement('div');t.className='loading';t.innerHTML='Loading&#8230;';document.body.appendChild(t);
+		}
 	}
 }
 function supportDate(f){if(f>Date.now()/1000)f=Date.now()/1000-60;var a=Math.floor((Date.now()/1000)-f);if(a<3600)return Math.floor(a/60)+' minutes';if(a<86400)return Math.floor(a/3600)+' hours';if(a<604800)return Math.floor(a/86400)+' days';if(a<2592000)return Math.floor(a/604800)+' weeks';if(a<31536000)return Math.floor(a/2592000)+' months';return Math.floor(a/31536000)+' years';}
@@ -159,6 +162,7 @@ function supportDate(f){if(f>Date.now()/1000)f=Date.now()/1000-60;var a=Math.flo
 var keyStr="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 function f_encode64(f){
 	f=escape(f);
+	if(typeof btoa!=="undefined")return btoa(f);
 	var out='',chr1,chr2,chr3,enc1,enc2,enc3,enc4,i=0;
 	do{
 		chr1=f.charCodeAt(i++);

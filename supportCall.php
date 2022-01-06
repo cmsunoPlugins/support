@@ -55,6 +55,7 @@ if(isset($_POST['a']))
 		$re = intval($_POST['r']); // resolve
 		$i = intval($_POST['i']);
 		$cont = utf8_encode(urldecode(base64_decode($_POST['c'])));
+		$cont = str_replace('%u0','&#x',$cont); // Unicode hack (start with 0)
 		if(file_exists('../../data/_sdata-'.$sdata.'/users.json')) // Default language from the USERS plugin
 			{
 			$q = file_get_contents('../../data/_sdata-'.$sdata.'/users.json');
