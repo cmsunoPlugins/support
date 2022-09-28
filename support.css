@@ -10,3 +10,12 @@
 #supportL>table .supportTd .bouton{margin:10px;}
 #supportL>table>tr>td:nth-child(5) div, #supportL>table .supportTd div{cursor:pointer;width:16px;height:16px;}
 #supportL table table td{max-width:600px;overflow:hidden;}
+@media screen and (max-width:780px){
+	.supportTrL{display:block;margin-bottom:10px;border-top:1px solid #888;}
+	.supportTrL td:nth-child(2){display:block;}
+	.supportTrL td:nth-child(3){display:block;text-align:right;padding-right:0;}
+	.supportTrL td:nth-child(4){padding-left:0;}
+	.supportT table tr{display:block;margin-bottom:8px;}
+	.supportT table td:nth-child(1){display:block;}
+	.supportT table td:nth-child(2){min-width:60%;}
+}

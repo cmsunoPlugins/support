@@ -11,7 +11,7 @@ function f_load_support(){
 				var t=document.createElement('table'),tr,td,dv;
 				jQuery.each(r.list,function(k,v){
 					d=f_timeConvert(v.d);
-					tr=document.createElement('tr');
+					tr=document.createElement('tr');tr.className="supportTrL";
 					td=document.createElement('td');td.innerHTML=v.t.substr(0,60)+(v.t.length>60?'...':'');td.onclick=function(){f_loadT_support(this,v.i)};if(v.r==1)td.className='resolved';tr.appendChild(td); // titre
 					td=document.createElement('td');td.innerHTML=v.n;tr.appendChild(td); // nb post
 					td=document.createElement('td');td.innerHTML=v.u;tr.appendChild(td); // last user
@@ -46,7 +46,7 @@ function f_loadT_support(f,l){
 				jQuery.each(r.topic,function(k,v){
 					d=f_timeConvert(v.d);
 					tr=document.createElement('tr');
-					td=document.createElement('td');td.innerHTML=v.c;tr.appendChild(td); // content
+					td=document.createElement('td');td.innerHTML=v.c.normalize();tr.appendChild(td); // content
 					td=document.createElement('td');td.innerHTML=v.u;tr.appendChild(td); // user
 					td=document.createElement('td');td.innerHTML=d;tr.appendChild(td); // date
 					td=document.createElement('td');
@@ -68,7 +68,7 @@ function f_loadT_support(f,l){
 					tr.appendChild(td);
 					t.appendChild(tr);
 				});
-				tr=document.createElement('tr');tr.id='supportT';
+				tr=document.createElement('tr');tr.className='supportT';
 				f.parentNode.parentNode.insertBefore(tr, f.parentNode.nextSibling);
 				n=f.parentNode.nextElementSibling;
 				td=document.createElement('td');td.colSpan='5';td.className='supportTd';

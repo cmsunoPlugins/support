@@ -30,7 +30,7 @@ Coupled with 'Users', 'Markdown' and 'Paypal', you will have a complete system t
 
 ### Versions ###
 
-* 1.4 - 06/01/2022 : Fix issue with unicode started with 0 (not others) - Add loading spinner when submit
+* 1.3.4 - 28/09/2022 : Responsive display
 * 1.3.3 - 24/11/2021 : Fix array key issue when remove Topic
 * 1.3.2 - 16/04/2020 : Trim and Fix multiple <br> in topic
 * 1.3.1 - 22/01/2018 : Add URL in the bottom of the mail
