@@ -4,8 +4,7 @@ if(!isset($_SESSION['cmsuno'])) exit();
 <?php
 if(!file_exists('data/'.$Ubusy.'/support.json')) file_put_contents('data/'.$Ubusy.'/support.json', '');
 if(!is_dir('data/'.$Ubusy.'/support')) mkdir('data/'.$Ubusy.'/support');
-if(strpos($Uhtml.$Ucontent,'[[support]]')!==false && file_exists('data/_sdata-'.$sdata.'/users.json'))
-	{
+if(strpos($Uhtml.$Ucontent,'[[support]]')!==false && file_exists('data/_sdata-'.$sdata.'/users.json')) {
 	$lang0 = $lang;
 	$q = file_get_contents('data/_sdata-'.$sdata.'/users.json'); $a = json_decode($q,true);
 	if(!empty($a['g'])) $lang = $a['g'];
@@ -49,5 +48,5 @@ if(strpos($Uhtml.$Ucontent,'[[support]]')!==false && file_exists('data/_sdata-'.
 	$unoUbusy = 1; // insert Ubusy with $script
 	//
 	$lang = $lang0;
-	}
+}
 ?>

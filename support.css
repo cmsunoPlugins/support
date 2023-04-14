@@ -10,6 +10,7 @@
 #supportL>table .supportTd .bouton{margin:10px;}
 #supportL>table>tr>td:nth-child(5) div, #supportL>table .supportTd div{cursor:pointer;width:16px;height:16px;}
 #supportL table table td{max-width:600px;overflow:hidden;}
+#supportNotif{text-align:center;background-color:orange;}
 @media screen and (max-width:780px){
 	.supportTrL{display:block;margin-bottom:10px;border-top:1px solid #888;}
 	.supportTrL td:nth-child(2){display:block;}

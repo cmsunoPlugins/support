@@ -40,7 +40,7 @@ var edCanvas,bbe=document.createElement('form');bb=true;
 	r=document.createElement('td');
 	s=document.createElement('p');s.className='submit';
 	t=document.createElement('input');t.id='idList';t.type='hidden';s.appendChild(t);
-	t=document.createElement('input');t.className='button';t.type='button';t.value=supTr.pot;t.onclick=function(){doCheck();supportAddTopic(this);};s.appendChild(t);
+	t=document.createElement('input');t.className='button';t.type='button';t.value=supTr.pot;t.onclick=function(){doCheck();supportAddTopic();};s.appendChild(t);
 	r.appendChild(s);
 	s=document.createElement('label');s.id='mailMeBloc';t=document.createElement('input');t.id='mailMe';t.type='checkbox';t.checked=true;s.appendChild(t);s.innerHTML+='&nbsp;'+supTr.ntm;r.appendChild(s);
 	s=document.createElement('label');s.id='resolveBloc';t=document.createElement('input');t.id='resolve';t.type='checkbox';t.checked=false;s.appendChild(t);s.innerHTML+='&nbsp;'+supTr.mar;r.appendChild(s);
@@ -54,15 +54,15 @@ var edCanvas,bbe=document.createElement('form');bb=true;
 		if(x.readyState==4&&x.status==200){
 			p=document.getElementById('support');
 			if(x.responseText){
-				d=eval('('+x.responseText+')');
+				d=JSON.parse(x.responseText);
 				o='<table class="widefat"><thead><tr><th>'+supTr.toc+'</th><th>'+supTr.pts+'</th><th>'+supTr.lap+'</th><th>'+supTr.fre+'</th></tr></thead><tbody id="spT">';
-				for(v=0;v<d['list'].length;v++)if(d['list'][v]['s']==1)o+='<tr class="staff" onClick="supportTopic(this,'+d['list'][v]['i']+',1)" id="support'+d['list'][v]['i']+'"><td>'+((d['list'][v]['r']==1)?'['+supTr.res+'] ':'')+d['list'][v]['t'].replace(/\\'/g,"'")+'</td><td>'+d['list'][v]['n']+'</td><td>'+d['list'][v]['u']+'</td><td>'+supportDate(d['list'][v]['d'])+'</td></tr>';
-				for(v=0;v<d['list'].length;v++)if(d['list'][v]['s']!=1)o+='<tr onClick="supportTopic(this,'+d['list'][v]['i']+',0)" id="support'+d['list'][v]['i']+'"><td>'+((d['list'][v]['r']==1)?'['+supTr.res+'] ':'')+d['list'][v]['t'].replace(/\\'/g,"'")+'</td><td>'+d['list'][v]['n']+'</td><td>'+d['list'][v]['u']+'</td><td>'+supportDate(d['list'][v]['d'])+'</td></tr>';
+				for(v=0;v<d['list'].length;v++){if(d['list'][v]['s']==1){o+='<tr class="staff" onClick="supportTopic(this,'+d['list'][v]['i']+',1)" id="support'+d['list'][v]['i']+'"><td>'+((d['list'][v]['r']==1)?'['+supTr.res+'] ':'')+d['list'][v]['t'].replace(/\\'/g,"'")+'</td><td>'+d['list'][v]['n']+'</td><td>'+d['list'][v]['u']+'</td><td>'+supportDate(d['list'][v]['d'])+'</td></tr>';}}
+				for(v=0;v<d['list'].length;v++){if(d['list'][v]['s']!=1){o+='<tr onClick="supportTopic(this,'+d['list'][v]['i']+',0)" id="support'+d['list'][v]['i']+'"><td>'+((d['list'][v]['r']==1)?'['+supTr.res+'] ':'')+d['list'][v]['t'].replace(/\\'/g,"'")+'</td><td>'+d['list'][v]['n']+'</td><td>'+d['list'][v]['u']+'</td><td>'+supportDate(d['list'][v]['d'])+'</td></tr>';}}
 				o+='</tbody></table>';
 				p.innerHTML=o;
 			}
 			var ct=0,isUsers=function(){
-				if(Users){
+				if(typeof Users!=='undefined'&&Users){
 					p.innerHTML+='<h2 class="post-form">'+supTr.ato+'</h2>';
 					a=bbe.getElementsByTagName('strong');for(v=0;v<a.length;v++)if(a[v].getAttribute('id')=='supportUsersName')a[v].innerHTML=Users['n'];
 					p.appendChild(bbe);
@@ -87,7 +87,7 @@ function supportTopic(f,g,h){
 				n=m.nextElementSibling.tBodies[0];
 				while(f.nextElementSibling)n.appendChild(f.nextElementSibling);
 			}
-			d=eval('('+x.responseText+')');
+			d=JSON.parse(x.responseText);
 			for(v=0;v<d['topic'].length;v++)e+='<li class="postitem"><div class="threadauthor col-3"><p><img src="'+f_usersGravatar(d['topic'][v]['e'],48)+'" class="avatar" /><strong>'+d['topic'][v]['u']+'</strong><br><small><span class="authortitle"><a href="javascript:void(0)">'+(d['topic'][v]['u']==d['staf']?supTr.stf:supTr.mem)+'</a></span><br>'+supportDate(d['topic'][v]['d'])+'<br></small></p></div><div class="threadpost col-7"><div class="post">'+d['topic'][v]['c'].replace(/\\'/g,"'")+'</div></div></li>';
 			e+='</ol><div style="clear:both;"></div>';
 			o=document.createElement('div');o.id='wrapTopic';o.onclick=function(){supportClose(this)};
@@ -136,7 +136,7 @@ function supportClose(f){
 		document.getElementById('titleTopic').style.display='block';
 	}
 }
-function supportAddTopic(f){
+function supportAddTopic(){
 	var c=document.getElementById("textareaEd").value,i=document.getElementById('idList').value,t=document.getElementById('topic').value,e=(document.getElementById('mailMe').checked?1:0),r=(document.getElementById('resolve').checked?1:0);
 	if(c.length>2&&(i!=''||t.length>2)){
 		c=c.replace(/(\r\n|\n|\r)/gm,"[br]");
@@ -151,10 +151,7 @@ function supportAddTopic(f){
 			}
 		}
 		x.send(params);
-		if(f){
-			f.style.display="none";
-			t=document.createElement('div');t.className='loading';t.innerHTML='Loading&#8230;';document.body.appendChild(t);
-		}
+		document.getElementById("postformsub").style.display="none";
 	}
 }
 function supportDate(f){if(f>Date.now()/1000)f=Date.now()/1000-60;var a=Math.floor((Date.now()/1000)-f);if(a<3600)return Math.floor(a/60)+' minutes';if(a<86400)return Math.floor(a/3600)+' hours';if(a<604800)return Math.floor(a/86400)+' days';if(a<2592000)return Math.floor(a/604800)+' weeks';if(a<31536000)return Math.floor(a/2592000)+' months';return Math.floor(a/31536000)+' years';}
