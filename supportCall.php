@@ -147,6 +147,7 @@ if(isset($_POST['a'])) {
 }
 function sortDate($i,$j){return strcmp($j['d'], $i['d']);}
 function mailAdmin($tit, $body, $Ubusy, $bottom, $top, $sdata) {
+	global $sdata, $Ukey;
 	$q = file_get_contents('../../data/'.$Ubusy.'/site.json'); $a = json_decode($q,true);
 	$q = file_get_contents('../../data/_sdata-'.$sdata.'/ssite.json'); $b = json_decode($q,true);
 	$rn = "\r\n";
@@ -159,16 +160,34 @@ function mailAdmin($tit, $body, $Ubusy, $bottom, $top, $sdata) {
 	$fm = preg_replace("/[^a-zA-Z ]+/", "", $a['tit']);
 	if(file_exists(dirname(__FILE__).'/../newsletter/PHPMailer/PHPMailerAutoload.php')) {
 		// PHPMailer
+		if(file_exists(dirname(__FILE__).'/../../data/_sdata-'.$sdata.'/newsletter.json')) {
+			$q = file_get_contents(dirname(__FILE__).'/../../data/_sdata-'.$sdata.'/newsletter.json');
+			$news = json_decode($q,true);
+			if(!empty($news['gmp'])) {
+				$news['gmp'] = openssl_decrypt(base64_decode($news['gmp']), 'AES-256-CBC', substr($Ukey,0,32), OPENSSL_RAW_DATA, base64_decode($news['iv']));
+				$news['gmp'] = rtrim($news['gmp'], "\0");
+			}
+		}
 		require_once(dirname(__FILE__).'/../newsletter/PHPMailer/PHPMailerAutoload.php');
 		$phm = new PHPMailer();
 		$phm->CharSet = "UTF-8";
 		$phm->setFrom($b['mel'], $fm);
 		$phm->addReplyTo($b['mel'], $fm);
-		$phm->AddAddress($b['mel']);
+		$phm->addAddress($b['mel']);
 		$phm->isHTML(true);
 		$phm->Subject = stripslashes($subject);
 		$phm->Body = stripslashes($msgH);		
 		$phm->AltBody = stripslashes($msgT);
+		if(!empty($news['met'])) { // SMTP
+			$phm->IsSMTP();
+			$phm->SMTPDebug = 0;  // debugging: 1 = errors and messages, 2 = messages only
+			$phm->SMTPAuth = true;  // authentication enabled
+			$phm->SMTPSecure = 'tls';
+			$phm->Port = 587; 
+			$phm->Host = ($news['met']=='gmail'?'smtp.gmail.com':$news['gmh']); // 'smtp.gmail.com'...
+			$phm->Username = $news['gma'];
+			$phm->Password = utf8_encode($news['gmp']);
+		}
 		if($phm->Send()) return true;
 		else return false;
 	}
@@ -192,6 +211,7 @@ function mailAdmin($tit, $body, $Ubusy, $bottom, $top, $sdata) {
 	}
 }
 function mailUsers($dest, $tit, $body, $Ubusy, $bottom, $top, $sdata) {
+	global $sdata, $Ukey;
 	$q = file_get_contents('../../data/'.$Ubusy.'/site.json'); $a = json_decode($q,true);
 	$q = file_get_contents('../../data/_sdata-'.$sdata.'/ssite.json'); $b = json_decode($q,true);
 	$q = file_get_contents('../../data/_sdata-'.$sdata.'/users.json'); $c = json_decode($q,true);
@@ -206,6 +226,14 @@ function mailUsers($dest, $tit, $body, $Ubusy, $bottom, $top, $sdata) {
 	$dest = explode(',', $dest);
 	if(file_exists(dirname(__FILE__).'/../newsletter/PHPMailer/PHPMailerAutoload.php')) {
 		// PHPMailer
+		if(file_exists(dirname(__FILE__).'/../../data/_sdata-'.$sdata.'/newsletter.json')) {
+			$q = file_get_contents(dirname(__FILE__).'/../../data/_sdata-'.$sdata.'/newsletter.json');
+			$news = json_decode($q,true);
+			if(!empty($news['gmp'])) {
+				$news['gmp'] = openssl_decrypt(base64_decode($news['gmp']), 'AES-256-CBC', substr($Ukey,0,32), OPENSSL_RAW_DATA, base64_decode($news['iv']));
+				$news['gmp'] = rtrim($news['gmp'], "\0");
+			}
+		}
 		require_once(dirname(__FILE__).'/../newsletter/PHPMailer/PHPMailerAutoload.php');
 		$phm = new PHPMailer();
 		$phm->CharSet = "UTF-8";
@@ -215,11 +243,21 @@ function mailUsers($dest, $tit, $body, $Ubusy, $bottom, $top, $sdata) {
 		$phm->Subject = stripslashes($subject);
 		$phm->Body = stripslashes($msgH);		
 		$phm->AltBody = stripslashes($msgT);
+		if(!empty($news['met'])) { // SMTP
+			$phm->IsSMTP();
+			$phm->SMTPDebug = 0;  // debugging: 1 = errors and messages, 2 = messages only
+			$phm->SMTPAuth = true;  // authentication enabled
+			$phm->SMTPSecure = 'tls';
+			$phm->Port = 587; 
+			$phm->Host = ($news['met']=='gmail'?'smtp.gmail.com':$news['gmh']); // 'smtp.gmail.com'...
+			$phm->Username = $news['gma'];
+			$phm->Password = utf8_encode($news['gmp']);
+		}
 		foreach($dest as $r) {
 			$phm->clearAllRecipients();
 			$m = '';
 			if($r && isset($c['user'][$r])) $m = $c['user'][$r]['e'];
-			$phm->AddAddress($m);
+			$phm->addAddress($m);
 			if($m && $m!=$b['mel']) $phm->Send();
 		}
 	}
